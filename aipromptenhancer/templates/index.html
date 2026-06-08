@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Enhancer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>✨ AI Prompt Enhancer</h1>
+        <p class="subtitle">Transform simple ideas into stunning image prompts</p>
+
+        <form method="POST" id="promptForm">
+            <div class="input-group">
+                <label>Describe Your Idea</label>
+                <textarea name="prompt" placeholder="e.g., krishna, red sports car, mountain landscape..." required>{{ request.form.prompt if request.form else '' }}</textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Select Art Style</label>
+                <select name="style" required>
+                    {% for style in styles %}
+                    <option value="{{ style }}" {% if request.form.style == style %}selected{% endif %}>{{ style }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="enhance-btn" id="submitBtn">🚀 Enhance Prompt</button>
+        </form>
+
+        {% if result %}
+        <div class="result-box">
+            <h3>✅ Enhanced Prompt</h3>
+            <pre id="enhanced-text">{{ result }}</pre>
+            <button onclick="copyPrompt()" class="copy-btn">📋 Copy Prompt</button>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const form = document.getElementById('promptForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', () => {
+            submitBtn.innerHTML = 'Enhancing... <span class="loader"></span>';
+            submitBtn.disabled = true;
+        });
+
+        function copyPrompt() {
+            const text = document.getElementById('enhanced-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Prompt copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
